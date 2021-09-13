@@ -2,3 +2,4 @@
 *.cx_metadata.json
 *user_test*
 *vcs.xml
+*.idea
