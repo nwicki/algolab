@@ -3,6 +3,14 @@
 using namespace std;
 
 void testcase() {
+    int n; cin >> n;
+    int a;
+    int sum = 0;
+    for(int i = 0; i < n; i++) {
+        cin >> a;
+        sum += a;
+    }
+    cout << sum << endl;
 }
 
 int main(int argc, char const *argv[]) {
