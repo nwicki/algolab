@@ -5,3 +5,4 @@ set(CMAKE_CXX_STANDARD 14)
 
 add_executable(1_build_the_sum 1_build_the_sum/src/main.cpp)
 add_executable(1_deck_of_cards 1_deck_of_cards/src/main.cpp)
+add_executable(1_dominoes 1_dominoes/src/main.cpp)
