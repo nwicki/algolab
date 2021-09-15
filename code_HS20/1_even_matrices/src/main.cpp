@@ -143,16 +143,17 @@ void reuse_even_matrices_3(const vector<vector<int>>& matrix) {
     vector<vector<int>> row_sums(n);
     for(auto& v : row_sums) { v = vector<int>(n); }
     int sum;
+    // Define sums per row
     for(int i = 0; i < n; i++) {
         row_sums[i][0] = matrix[i][0];
         for (int j = 0 + 1; j < n; j++) {
             row_sums[i][j] = row_sums[i][j - 1] + matrix[i][j];
         }
     }
+    // Compute consecutive sums per row and the first column, and count even results
     auto sums = row_sums;
     for(int j = 0; j < n; j++) {
-        sum = sums[0][j];
-        count += sum % 2 == 0;
+        count += sums[0][j] % 2 == 0;
     }
     for(int i = 1; i < n; i++) {
         for(int j = 0; j < n; j++) {
@@ -164,12 +165,13 @@ void reuse_even_matrices_3(const vector<vector<int>>& matrix) {
     for(int row = 1; row < n; row++) {
         for(int i = row; i < n; i++) {
             for(int j = 0; j < n; j++) {
-                sum = sums[i][j] - sums[row-1][j];
+                sum = sums[i][j] - row_sums[row-1][j];
                 count += sum % 2 == 0;
                 sums[i][j] = sum;
             }
         }
     }
+    // Compute consecutive sums per column
     for(int col = 1; col < n; col++) {
         sums = row_sums;
         for(int i = 0; i < n; i++) {
@@ -179,8 +181,7 @@ void reuse_even_matrices_3(const vector<vector<int>>& matrix) {
         }
         row_sums = sums;
         for(int j = col; j < n; j++) {
-            sum = sums[0][j];
-            count += sum % 2 == 0;
+            count += sums[0][j] % 2 == 0;
         }
         for(int i = 1; i < n; i++) {
             for(int j = col; j < n; j++) {
