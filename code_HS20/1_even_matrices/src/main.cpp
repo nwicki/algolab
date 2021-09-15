@@ -137,50 +137,67 @@ int compute_sums_2(int col, const vector<vector<int>>& matrix) {
     return count;
 }
 
-int compute_sums_3(int col, const vector<vector<int>>& matrix) {
+void reuse_even_matrices_3(const vector<vector<int>>& matrix) {
     int n = (int) matrix.size();
     int count = 0;
     vector<vector<int>> row_sums(n);
-    for(auto& v : row_sums) { v = vector<int>(n,0); }
-    vector<vector<int>> sums(n);
-    for(auto& v : sums) { v = vector<int>(n,0); }
+    for(auto& v : row_sums) { v = vector<int>(n); }
     int sum;
     for(int i = 0; i < n; i++) {
-        row_sums[i][col] = matrix[i][col];
-        for (int j = col + 1; j < n; j++) {
+        row_sums[i][0] = matrix[i][0];
+        for (int j = 0 + 1; j < n; j++) {
             row_sums[i][j] = row_sums[i][j - 1] + matrix[i][j];
         }
     }
-    for(int j = col; j < n; j++) {
-        sum = row_sums[0][j];
+    auto sums = row_sums;
+    for(int j = 0; j < n; j++) {
+        sum = sums[0][j];
         count += sum % 2 == 0;
-        sums[0][j] = sum;
     }
     for(int i = 1; i < n; i++) {
-        for(int j = col; j < n; j++) {
-            sum = row_sums[i][j] + sums[i-1][j];
+        for(int j = 0; j < n; j++) {
+            sum = sums[i][j] + sums[i-1][j];
             count += sum % 2 == 0;
             sums[i][j] = sum;
         }
     }
     for(int row = 1; row < n; row++) {
         for(int i = row; i < n; i++) {
-            for(int j = col; j < n; j++) {
-                sum = sums[i][j] - row_sums[row-1][j];
+            for(int j = 0; j < n; j++) {
+                sum = sums[i][j] - sums[row-1][j];
                 count += sum % 2 == 0;
                 sums[i][j] = sum;
             }
         }
     }
-
-    return count;
-}
-
-void reuse_even_matrices_3(const vector<vector<int>>& matrix) {
-    int n = (int) matrix.size();
-    int count = 0;
-    for(int j = 0; j < n; j++) {
-        count += compute_sums_3(j,matrix);
+    for(int col = 1; col < n; col++) {
+        sums = row_sums;
+        for(int i = 0; i < n; i++) {
+            for(int j = col; j < n; j++) {
+                sums[i][j] -= row_sums[i][col-1];
+            }
+        }
+        row_sums = sums;
+        for(int j = col; j < n; j++) {
+            sum = sums[0][j];
+            count += sum % 2 == 0;
+        }
+        for(int i = 1; i < n; i++) {
+            for(int j = col; j < n; j++) {
+                sum = sums[i][j] + sums[i-1][j];
+                count += sum % 2 == 0;
+                sums[i][j] = sum;
+            }
+        }
+        for(int row = 1; row < n; row++) {
+            for(int i = row; i < n; i++) {
+                for(int j = col; j < n; j++) {
+                    sum = sums[i][j] - sums[row-1][j];
+                    count += sum % 2 == 0;
+                    sums[i][j] = sum;
+                }
+            }
+        }
     }
     cout << count << endl;
 }
