@@ -98,6 +98,93 @@ void reuse_even_matrices_2(const vector<vector<int>>& matrix) {
     cout << count << endl;
 }
 
+int compute_sums_2(int col, const vector<vector<int>>& matrix) {
+    int n = (int) matrix.size();
+    int count = 0;
+    vector<vector<int>> row_sums(n);
+    for(auto& v : row_sums) { v = vector<int>(n,0); }
+    vector<vector<int>> sums(n);
+    for(auto& v : sums) { v = vector<int>(n,0); }
+    int sum;
+    for(int i = 0; i < n; i++) {
+        row_sums[i][col] = matrix[i][col];
+        for (int j = col + 1; j < n; j++) {
+            row_sums[i][j] = row_sums[i][j - 1] + matrix[i][j];
+        }
+    }
+    for(int j = col; j < n; j++) {
+        sum = row_sums[0][j];
+        count += sum % 2 == 0;
+        sums[0][j] = sum;
+    }
+    for(int i = 1; i < n; i++) {
+        for(int j = col; j < n; j++) {
+            sum = row_sums[i][j] + sums[i-1][j];
+            count += sum % 2 == 0;
+            sums[i][j] = sum;
+        }
+    }
+    for(int row = 1; row < n; row++) {
+        for(int i = row; i < n; i++) {
+            for(int j = col; j < n; j++) {
+                sum = sums[i][j] - row_sums[row-1][j];
+                count += sum % 2 == 0;
+                sums[i][j] = sum;
+            }
+        }
+    }
+
+    return count;
+}
+
+int compute_sums_3(int col, const vector<vector<int>>& matrix) {
+    int n = (int) matrix.size();
+    int count = 0;
+    vector<vector<int>> row_sums(n);
+    for(auto& v : row_sums) { v = vector<int>(n,0); }
+    vector<vector<int>> sums(n);
+    for(auto& v : sums) { v = vector<int>(n,0); }
+    int sum;
+    for(int i = 0; i < n; i++) {
+        row_sums[i][col] = matrix[i][col];
+        for (int j = col + 1; j < n; j++) {
+            row_sums[i][j] = row_sums[i][j - 1] + matrix[i][j];
+        }
+    }
+    for(int j = col; j < n; j++) {
+        sum = row_sums[0][j];
+        count += sum % 2 == 0;
+        sums[0][j] = sum;
+    }
+    for(int i = 1; i < n; i++) {
+        for(int j = col; j < n; j++) {
+            sum = row_sums[i][j] + sums[i-1][j];
+            count += sum % 2 == 0;
+            sums[i][j] = sum;
+        }
+    }
+    for(int row = 1; row < n; row++) {
+        for(int i = row; i < n; i++) {
+            for(int j = col; j < n; j++) {
+                sum = sums[i][j] - row_sums[row-1][j];
+                count += sum % 2 == 0;
+                sums[i][j] = sum;
+            }
+        }
+    }
+
+    return count;
+}
+
+void reuse_even_matrices_3(const vector<vector<int>>& matrix) {
+    int n = (int) matrix.size();
+    int count = 0;
+    for(int j = 0; j < n; j++) {
+        count += compute_sums_3(j,matrix);
+    }
+    cout << count << endl;
+}
+
 void testcase() {
     int n; cin >> n;
     vector<vector<int>> matrix(n);
@@ -108,7 +195,7 @@ void testcase() {
             matrix[i][j] = xij;
         }
     }
-    reuse_even_matrices_2(matrix);
+    reuse_even_matrices_3(matrix);
 }
 
 int main(int argc, char const *argv[]) {
