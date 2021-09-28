@@ -4,39 +4,34 @@
 
 using namespace std;
 
-class Interval {
-public:
-    int start;
-    int end;
-    int sum;
-    Interval(int s, int e, int su) {
-        start = s;
-        end = e;
-        sum = su;
+void sum_trigger(int k, int sum, int start, int i, pair<int,int>& interval, int& min) {
+    int diff = abs(k-sum);
+    if(diff < min) {
+        interval = make_pair(start,i);
+        min = diff;
     }
-};
+}
 
-
-// 1 ≤ n ≤ 10^5, 0 ≤ k ≤ 2^30, sum of deck ≤ 2^30
 void testcase() {
     int n,k; cin >> n >> k;
-    vector<int> deck(n);
-    Interval opt = Interval(0,0,2<<30);
-    Interval current = Interval(0,0,0);
+    auto interval = make_pair(0,0);
+    int min = (1L << 31) - 1;
+    int sum = 0;
+    vector<int> v(n);
+    int start = 0;
     for(int i = 0; i < n; i++) {
-        int v;
-        cin >> v;
-        current.sum += v;
-        current.end = i;
-        deck[i] = v;
-        while(k < current.sum) {
-            current.sum -= deck[current.start++];
-        }
-        if(abs(current.sum - k) < abs(opt.sum - k)) {
-            opt = current;
+        cin >> v[i];
+        if(min != 0) {
+            sum += v[i];
+            sum_trigger(k,sum,start,i,interval,min);
+            while(k < sum && start < i) {
+                sum -= v[start];
+                start++;
+            }
+            sum_trigger(k,sum,start,i,interval,min);
         }
     }
-    cout << opt.start << " " << opt.end << endl;
+    cout << interval.first << " " << interval.second << endl;
 }
 
 int main(int argc, char const *argv[]) {
