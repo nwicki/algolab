@@ -132,20 +132,11 @@ void compute_100(int r, int b, int n) {
     memo_odd = vector<int>(n,-1);
     int holmes_count = move_even(r);
     int moriarty_count = move_even(b);
-    if(holmes_count < moriarty_count) {
-        cout << 0 << endl;
+    if(holmes_count == moriarty_count) {
+        cout << !(holmes_count % 2) << endl;
+        return;
     }
-    else if (moriarty_count < holmes_count) {
-        cout << 1 << endl;
-    }
-    else {
-        if(holmes_count % 2 == 1) {
-            cout << 0 << endl;
-        }
-        else {
-            cout << 1 << endl;
-        }
-    }
+    cout << (moriarty_count < holmes_count) << endl;
 }
 
 void testcase() {
