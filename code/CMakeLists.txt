@@ -3,6 +3,8 @@ project(algolab)
 
 set(CMAKE_CXX_STANDARD 14)
 
+find_package(CGAL)
+
 add_executable(0_basic_data_types 0_basic_data_types/src/main.cpp)
 add_executable(0_bfs 0_bfs/src/main.cpp)
 add_executable(0_dfs 0_dfs/src/main.cpp)
@@ -24,4 +26,24 @@ add_executable(2_burning_coins 2_burning_coins/src/main.cpp)
 add_executable(2_defensive_line 2_defensive_line/src/main.cpp)
 add_executable(2_the_great_game 2_the_great_game/src/main.cpp)
 add_executable(3_from_russia_with_love 3_from_russia_with_love/src/main.cpp)
+add_executable(3_antenna 3_antenna/src/main.cpp)
+target_link_libraries(3_antenna CGAL::CGAL)
+add_executable(3_first_hit 3_first_hit/src/main.cpp)
+target_link_libraries(3_antenna CGAL::CGAL)
+add_executable(3_hiking_maps 3_hiking_maps/src/main.cpp)
+target_link_libraries(3_hiking_maps CGAL::CGAL)
+add_executable(3_hit 3_hit/src/main.cpp)
+target_link_libraries(3_hit CGAL::CGAL)
+add_executable(3_hello 3_example_programs/hello.cpp)
+target_link_libraries(3_hello CGAL::CGAL)
+add_executable(3_hello-exact 3_example_programs/hello-exact.cpp)
+target_link_libraries(3_hello-exact CGAL::CGAL)
+add_executable(3_intersect 3_example_programs/intersect.cpp)
+target_link_libraries(3_intersect CGAL::CGAL)
+add_executable(3_miniball 3_example_programs/miniball.cpp)
+target_link_libraries(3_miniball CGAL::CGAL)
+add_executable(3_two-kernels 3_example_programs/two-kernels.cpp)
+target_link_libraries(3_two-kernels CGAL::CGAL)
+
+
 
