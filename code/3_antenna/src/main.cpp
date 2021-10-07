@@ -13,13 +13,6 @@ typedef CGAL::Exact_predicates_exact_constructions_kernel_with_sqrt K;
 typedef CGAL::Min_circle_2_traits_2<K> Traits;
 typedef CGAL::Min_circle_2<Traits> Min_circle;
 
-double floor_to_double(const K::FT& x) {
-  double a = floor(CGAL::to_double(x));
-  while (a > x) a -= 1;
-  while (a+1 <= x) a += 1;
-  return a;
-}
-
 void testcase(int n) {
     vector<K::Point_2> citizens(n);
     for(auto& c : citizens) {
