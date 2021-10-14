@@ -3,7 +3,13 @@ project(algolab)
 
 set(CMAKE_CXX_STANDARD 14)
 
+# Link to CGAL library
 find_package(CGAL)
+set(CGAL_DO_NOT_WARN_ABOUT_CMAKE_BUILD_TYPE TRUE)
+
+# Link to Boost library
+find_package(Boost)
+include_directories(${Boost_INCLUDE_DIRS})
 
 add_executable(0_basic_data_types 0_basic_data_types/src/main.cpp)
 add_executable(0_bfs 0_bfs/src/main.cpp)
@@ -44,6 +50,25 @@ add_executable(3_miniball 3_example_programs/miniball.cpp)
 target_link_libraries(3_miniball CGAL::CGAL)
 add_executable(3_two-kernels 3_example_programs/two-kernels.cpp)
 target_link_libraries(3_two-kernels CGAL::CGAL)
-
-
+add_executable(4_fighting_pits_of_meereen 4_fighting_pits_of_meereen/src/main.cpp)
+add_executable(4_ant_challenge 4_ant_challenge/src/main.cpp)
+target_link_libraries(4_ant_challenge ${Boost_LIBRARIES})
+add_executable(4_buddy_selection 4_buddy_selection/src/main.cpp)
+target_link_libraries(4_buddy_selection ${Boost_LIBRARIES})
+add_executable(4_bridges 4_bridges/src/main.cpp)
+target_link_libraries(4_bridges ${Boost_LIBRARIES})
+add_executable(4_bgl_intro_connected_components 4_example_programs/bgl_intro_connected_components.cpp)
+target_link_libraries(4_bgl_intro_connected_components ${Boost_LIBRARIES})
+add_executable(4_bgl_intro_dijkstra 4_example_programs/bgl_intro_dijkstra.cpp)
+target_link_libraries(4_bgl_intro_dijkstra ${Boost_LIBRARIES})
+add_executable(4_bgl_intro_edmonds 4_example_programs/bgl_intro_edmonds.cpp)
+target_link_libraries(4_bgl_intro_edmonds ${Boost_LIBRARIES})
+add_executable(4_bgl_intro_init 4_example_programs/bgl_intro_init.cpp)
+target_link_libraries(4_bgl_intro_init ${Boost_LIBRARIES})
+add_executable(4_bgl_intro_kruskal 4_example_programs/bgl_intro_kruskal.cpp)
+target_link_libraries(4_bgl_intro_kruskal ${Boost_LIBRARIES})
+add_executable(4_bgl_intro_universal_fast 4_example_programs/bgl_intro_universal_fast.cpp)
+target_link_libraries(4_bgl_intro_universal_fast ${Boost_LIBRARIES})
+add_executable(4_bgl_intro_universal_slow 4_example_programs/bgl_intro_universal_slow.cpp)
+target_link_libraries(4_bgl_intro_universal_slow ${Boost_LIBRARIES})
 
