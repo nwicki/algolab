@@ -71,4 +71,6 @@ add_executable(4_bgl_intro_universal_fast 4_example_programs/bgl_intro_universal
 target_link_libraries(4_bgl_intro_universal_fast ${Boost_LIBRARIES})
 add_executable(4_bgl_intro_universal_slow 4_example_programs/bgl_intro_universal_slow.cpp)
 target_link_libraries(4_bgl_intro_universal_slow ${Boost_LIBRARIES})
+add_executable(4_first_steps_with_bgl 4_first_steps_with_bgl/src/main.cpp)
+target_link_libraries(4_first_steps_with_bgl ${Boost_LIBRARIES})
 
