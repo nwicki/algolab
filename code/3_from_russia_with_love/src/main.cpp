@@ -49,44 +49,41 @@ void compute_20(int n, int m, int k) {
 }
 
 const int MIN = 1 << 31;
-vector<vector<int>> memo_60;
+vector<vector<int>> memo_100;
 
-int pick_a_coin_60(int i, int j, int step) {
-    int mem = memo_60[i][j];
+int pick_a_coin_100(int i, int j, int step) {
+    int mem = memo_100[i][j];
     if(mem != -1) {
         return mem;
     }
-    if(i == j) {
-        mem = coins[i];
-    }
-    else if(j - i <= step) {
+    if(j - i <= step) {
         mem = max(coins[i],coins[j]);
     }
     else {
         int result_left = MAX;
         int end = j + 1;
         for(int ii = i+1, jj = j - step; jj < end; ii++,jj++) {
-            result_left = min(result_left, pick_a_coin_60(ii, jj, step));
+            result_left = min(result_left, pick_a_coin_100(ii, jj, step));
         }
         result_left += coins[i];
         int result_right = MAX;
         end = j;
         for(int ii = i, jj = j - step - 1; jj < end; ii++,jj++) {
-            result_right = min(result_right, pick_a_coin_60(ii, jj, step));
+            result_right = min(result_right, pick_a_coin_100(ii, jj, step));
         }
         result_right += coins[j];
         mem = max(result_left,result_right);
     }
-    memo_60[i][j] = mem;
+    memo_100[i][j] = mem;
     return mem;
 }
 
-void compute_60(int n, int m, int k) {
-    memo_60 = vector<vector<int>>(n,vector<int>(n,-1));
+void compute_100(int n, int m, int k) {
+    memo_100 = vector<vector<int>>(n, vector<int>(n, -1));
     int result = MAX;
     int step = m - 1;
     for(int i = 0,j = n - 1 - k; j < n; i++,j++) {
-        result = min(result, pick_a_coin_60(i, j, step));
+        result = min(result, pick_a_coin_100(i, j, step));
     }
     cout << result << endl;
 }
@@ -97,7 +94,7 @@ void testcase() {
   for(int& e : coins) {
     cin >> e;
   }
-  compute_60(n,m,k);
+    compute_100(n, m, k);
 }
 
 int main(int argc, char** argv) {
