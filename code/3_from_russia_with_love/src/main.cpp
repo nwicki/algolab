@@ -6,13 +6,14 @@ using namespace std;
 const int MAX = (1L << 31) - 1;
 
 vector<int> coins;
-vector<vector<vector<int>>> memo;
 
-int pick_a_coin(int i, int j, int p, int k, int m) {
+vector<vector<vector<int>>> memo_20;
+
+int pick_a_coin_20(int i, int j, int p, int k, int m) {
   if(p == m) {
     p = 0;
   }
-  int mem = memo[i][j][p];
+  int mem = memo_20[i][j][p];
   if(mem != -1) {
     return mem;
   }
@@ -30,8 +31,8 @@ int pick_a_coin(int i, int j, int p, int k, int m) {
     }
   }
   else {
-    int left = pick_a_coin(i+1,j,p+1,k,m);
-    int right = pick_a_coin(i,j-1,p+1,k,m);
+    int left = pick_a_coin_20(i + 1, j, p + 1, k, m);
+    int right = pick_a_coin_20(i, j - 1, p + 1, k, m);
     if(p == k) {
       mem = max(coins[i] + left, coins[j] + right);
     }
@@ -39,16 +40,15 @@ int pick_a_coin(int i, int j, int p, int k, int m) {
       mem = min(left,right);
     }
   }
-  memo[i][j][p] = mem;
+    memo_20[i][j][p] = mem;
   return mem;
 }
 
 void compute_20(int n, int m, int k) {
-  memo = vector<vector<vector<int>>>(n,vector<vector<int>>(n,vector<int>(m,-1)));
-  cout << pick_a_coin(0,n-1,0,k,m) << endl;
+    memo_20 = vector<vector<vector<int>>>(n, vector<vector<int>>(n, vector<int>(m, -1)));
+  cout << pick_a_coin_20(0, n - 1, 0, k, m) << endl;
 }
 
-const int MIN = 1 << 31;
 vector<vector<int>> memo_100;
 
 int pick_a_coin_100(int i, int j, int step) {
