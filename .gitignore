@@ -5,3 +5,4 @@
 *.idea
 *check.out
 *.DS_Store
+*/build
