@@ -1,3 +1,7 @@
+#define BOOST_ALLOW_DEPRECATED_HEADERS
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
+
+
 // Includes
 #include <iostream>
 #include <vector>

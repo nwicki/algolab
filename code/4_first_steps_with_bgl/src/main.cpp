@@ -1,12 +1,11 @@
-#pragma GCC diagnostic push
+#define BOOST_ALLOW_DEPRECATED_HEADERS
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 
 #include <iostream>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/kruskal_min_spanning_tree.hpp>
 #include <boost/graph/dijkstra_shortest_paths.hpp>
 #include <vector>
-
-#pragma GCC diagnostic pop
 
 using namespace std;
 
