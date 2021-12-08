@@ -135,3 +135,6 @@ target_link_libraries(10_golden_eye CGAL::CGAL)
 add_executable(10_asterix_and_the_chariot_race 10_asterix_and_the_chariot_race/src/main.cpp)
 add_executable(11_asterix_and_the_roman_legions 11_asterix_and_the_roman_legions/src/main.cpp)
 target_link_libraries(11_asterix_and_the_roman_legions CGAL::CGAL)
+add_executable(11_idefix_and_the_mansions_of_the_gods 11_idefix_and_the_mansions_of_the_gods/src/main.cpp)
+target_link_libraries(11_idefix_and_the_mansions_of_the_gods CGAL::CGAL ${Boost_LIBRARIES})
+
