@@ -20,7 +20,7 @@ typedef adjacency_list<vecS, vecS, directedS, no_property,
 typedef graph_traits<graph_t>::edge_descriptor edge_t;
 typedef graph_traits<graph_t>::vertex_descriptor vertex_t;
 
-int index(int r, int c, int n) {
+vertex_t index(vertex_t r, vertex_t c, vertex_t n) {
     return r * n + c;
 }
 
@@ -39,8 +39,8 @@ void add_edge(graph_t& G, vertex_t from, vertex_t to, long capacity, long cost) 
 }
 
 void testcase() {
-    int n; cin >> n;
-    vector<vector<int>> matrix(n, vector<int>(n));
+    vertex_t n; cin >> n;
+    vector<vector<long>> matrix(n, vector<long>(n));
     for(auto& row : matrix) {
         for(auto& col : row) {
             cin >> col;
@@ -53,8 +53,8 @@ void testcase() {
         add_edge(g, index(i-1,0,n), index(i,0,n), 1, -matrix[i][0] + adjust);
     }
     vertex_t restrictor = n * n;
-    for(int i = 1; i < n; i++) {
-        for(int j = 1; j < n; j++) {
+    for(vertex_t i = 1; i < n; i++) {
+        for(vertex_t j = 1; j < n; j++) {
             if(i == n-1 && j == n-1) {
                 add_edge(g, index(i-1,j,n), index(i,j,n), 1, 0);
                 add_edge(g, index(i,j-1,n), index(i,j,n), 1, 0);

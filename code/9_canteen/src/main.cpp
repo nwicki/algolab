@@ -5,6 +5,7 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/cycle_canceling.hpp>
 #include <boost/graph/push_relabel_max_flow.hpp>
+#include <boost/graph/successive_shortest_path_nonnegative_weights.hpp>
 #include <boost/graph/find_flow_cost.hpp>
 #include <vector>
 #include <queue>
@@ -18,9 +19,10 @@ typedef adjacency_list<vecS, vecS, directedS, no_property, property<edge_capacit
                 property <edge_weight_t, long>>>>> graph_t;
 typedef graph_traits<graph_t>::edge_descriptor edge_t;
 typedef graph_traits<graph_t>::vertex_descriptor vertex_t;
+typedef graph_traits<graph_t>::edge_iterator edge_it_t;
 typedef graph_traits<graph_t>::out_edge_iterator out_edge_it_t;
 
-void add_edge(graph_t& g, vertex_t u, vertex_t v, long capacity, long cost) {
+pair<edge_t,edge_t> add_edge(graph_t& g, vertex_t u, vertex_t v, long capacity, long cost) {
     auto c_map = get(edge_capacity, g);
     auto r_map = get(edge_reverse, g);
     auto w_map = get(edge_weight, g);
@@ -32,37 +34,38 @@ void add_edge(graph_t& g, vertex_t u, vertex_t v, long capacity, long cost) {
     r_map[rev_e] = e;
     w_map[e] = cost;
     w_map[rev_e] = -cost;
+    return make_pair(e,rev_e);
 }
 
 void compute_80() {
     size_t n; cin >> n;
     graph_t days(n);
-    vertex_t source = add_vertex(days);
-    vertex_t target = add_vertex(days);
+    vertex_t v_source = add_vertex(days);
+    vertex_t v_target = add_vertex(days);
     long students = 0;
     for(vertex_t i = 0; i < n; i++) {
         long a, c; cin >> a >> c;
-        add_edge(days, source, i, a, c);
+        add_edge(days, v_source, i, a, c);
     }
     for(vertex_t i = 0; i < n; i++) {
         long s, p; cin >> s >> p;
         students += s;
-        add_edge(days, i, target, s, -p);
+        add_edge(days, i, v_target, s, -p);
     }
     for(vertex_t i = 0; i < n-1; i++) {
         long v, e; cin >> v >> e;
         add_edge(days, i, i+1, v, e);
     }
-    long flow = push_relabel_max_flow(days, source, target);
+    long flow = push_relabel_max_flow(days, v_source, v_target);
+    cycle_canceling(days);
     if(flow != students) {
         cout << "im";
     }
     cout << "possible " << flow << " ";
-    cycle_canceling(days);
     cout << -find_flow_cost(days) << endl;
 }
 
-void testcase() {
+void priority_q() {
     size_t n; cin >> n;
     vector<pair<long,long>> ca;
     ca.reserve(n);
@@ -88,43 +91,44 @@ void testcase() {
     long S = 0L;
     long P = 0L;
     for(size_t i = 0L; i < n; i++) {
+        // First: cost, second: menus
         auto menu = ca[i];
-        auto price_student = ps[i];
+        // First: price, second: students
+        auto students = ps[i];
         // Push the menu from today as a possibility to feed the students
         menus.push(menu);
-        while(!menus.empty() && 0L < price_student.second) {
+        while(!menus.empty() && 0L < students.second) {
             // Get the cheapest menu
             menu = menus.top();
             menus.pop();
-            // Students to be fed
-            long students = price_student.second;
-            // Remaining students we need to feed
-            price_student.second = max(0L, price_student.second - menu.second);
-            // Remaining menus we can distribute
-            menu.second = max(0L, menu.second - students);
-            // Students we fed
-            long fed = students - price_student.second;
+            // Students we can feed with this menu
+            long fed = min(menu.second, students.second);
+            // Students that still need to be fed
+            students.second -= fed;
+            // Remaining menus
+            menu.second -= fed;
             // Total amount of students we fed
             S += fed;
             // Total profit: students we fed times the profit per menu sold (price paid by student - cost of menu)
-            P += fed * (price_student.first - menu.first);
+            P += fed * (students.first - menu.first);
             // If there are still menus remaining use the next day
             if(0L < menu.second) {
                 menus.push(menu);
             }
         }
-        auto energy_volume = ev[i];
+        // First: cost, second: space
+        auto freezer = ev[i];
         priority_queue<pair<long,long>, vector<pair<long,long>>, greater<>> temp;
-        while(!menus.empty() && 0L < energy_volume.second) {
+        while(!menus.empty() && 0L < freezer.second) {
             // Get the cheapest menus
             menu = menus.top();
             menus.pop();
             // Either we can place all menus in the freezer or the freezer determines the amount of menus
-            menu.second = min(energy_volume.second, menu.second);
+            menu.second = min(freezer.second, menu.second);
             // Freezer space is reduced by the amount of menus or will be zero
-            energy_volume.second -= menu.second;
+            freezer.second -= menu.second;
             // Using the cheapest menus from today the following day will additionally incur an energy cost
-            menu.first += energy_volume.first;
+            menu.first += freezer.first;
             temp.push(menu);
         }
         menus = temp;
@@ -135,6 +139,49 @@ void testcase() {
     cout << "possible " << S << " " << P << endl;
 }
 
+void testcase() {
+    size_t n; cin >> n;
+    graph_t days(n);
+    vertex_t v_source = add_vertex(days);
+    vertex_t v_target = add_vertex(days);
+    long students = 0;
+    long adjust = 0;
+    vector<edge_t> rev_edges;
+    rev_edges.reserve(3 * n - 2);
+    for(vertex_t i = 0; i < n; i++) {
+        long a, c; cin >> a >> c;
+        rev_edges.push_back(add_edge(days, v_source, i, a, c + adjust).second);
+    }
+    for(vertex_t i = 0; i < n; i++) {
+        long s, p; cin >> s >> p;
+        students += s;
+        rev_edges.push_back(add_edge(days, i, v_target, s, -p + adjust).second);
+    }
+    for(vertex_t i = 0; i < n-1; i++) {
+        long v, e; cin >> v >> e;
+        rev_edges.push_back(add_edge(days, i, i+1, v, e + adjust).second);
+    }
+    push_relabel_max_flow(days, v_source, v_target);
+    cycle_canceling(days);
+    auto rc_map = get(edge_residual_capacity, days);
+    edge_it_t it, end;
+    for(tie(it, end) = edges(days); it != end; it++) {
+        cout << "(" << source(*it, days) << "," << target(*it, days) << "): " << rc_map[*it] << endl;
+    }
+    long flow = 0;
+    for(vertex_t i = 0; i < n; i++) {
+        flow += rc_map[rev_edges[i]];
+    }
+    long used_flow = 0;
+    for(auto& e : rev_edges) {
+        used_flow += rc_map[e];
+    }
+    if(flow != students) {
+        cout << "im";
+    }
+    cout << "possible " << flow << " ";
+    cout << -(find_flow_cost(days) - used_flow * adjust) << endl;
+}
 
 int main() {
     ios_base::sync_with_stdio(false);
