@@ -139,4 +139,6 @@ add_executable(11_idefix_and_the_mansions_of_the_gods 11_idefix_and_the_mansions
 target_link_libraries(11_idefix_and_the_mansions_of_the_gods CGAL::CGAL ${Boost_LIBRARIES})
 add_executable(12_bonus_level 12_bonus_level/src/main.cpp)
 target_link_libraries(12_bonus_level CGAL::CGAL ${Boost_LIBRARIES})
+add_executable(12_carsharing 12_carsharing/src/main.cpp)
+target_link_libraries(12_carsharing CGAL::CGAL ${Boost_LIBRARIES})
 
