@@ -53,7 +53,6 @@ void testcase() {
     }
     vector<route> routes(n);
     vector<map<long,vertex_t>> indices(s);
-    vector<vector<pair<long,vertex_t>>> indices_sorted(s);
     map<edge_t,long> forward;
     size_t num_vertices = 0;
     long last_arrival = 0;
@@ -63,12 +62,10 @@ void testcase() {
         last_arrival = max(last_arrival, r.a);
         if(indices[r.u].find(r.d) == indices[r.u].end()) {
             indices[r.u].insert(make_pair(r.d,num_vertices));
-            indices_sorted[r.u].emplace_back(r.d, num_vertices);
             num_vertices++;
         }
         if(indices[r.v].find(r.a) == indices[r.v].end()) {
             indices[r.v].insert(make_pair(r.a,num_vertices));
-            indices_sorted[r.v].emplace_back(r.a, num_vertices);
             num_vertices++;
         }
     }
@@ -78,28 +75,26 @@ void testcase() {
     vertex_t source = add_vertex(g);
     vertex_t target = add_vertex(g);
     for(size_t i = 0; i < s; i++) {
-        auto& indi = indices_sorted[i];
+        auto indi = vector<pair<long,vertex_t>>(indices[i].begin(),indices[i].end());
         sort(indi.begin(), indi.end());
-        auto u = indi.front();
-        auto e = add_edge(g, source, u.second, cars[i], adjust * u.first);
-        forward[e] = adjust * u.first;
-        auto v = indi.back();
-        e = add_edge(g, v.second, target, MAX, adjust * (last_arrival - v.first));
-        forward[e] = adjust * (last_arrival - v.first);
-    }
-    for(auto& ind : indices_sorted) {
-        for(size_t j = 0; j < ind.size()-1; j++) {
-            auto u = ind[j];
-            auto v = ind[j+1];
-            auto e = add_edge(g, u.second, v.second, MAX, adjust * (v.first - u.first));
-            forward[e] = adjust * (v.first - u.first);
+        auto station_start = indi.front();
+        long cost_start = adjust * station_start.first;
+        forward[add_edge(g, source, station_start.second, cars[i], cost_start)] = cost_start;
+        for(size_t j = 0; j < indi.size()-1; j++) {
+            auto u = indi[j];
+            auto v = indi[j+1];
+            long cost_internal = adjust * (v.first - u.first);
+            forward[add_edge(g, u.second, v.second, MAX, cost_internal)] = cost_internal;
         }
+        auto station_end = indi.back();
+        long cost_end = adjust * (last_arrival - station_end.first);
+        forward[add_edge(g, station_end.second, target, MAX, cost_end)] = cost_end;
     }
     for(auto& r : routes) {
         auto u = *indices[r.u].find(r.d);
         auto v = *indices[r.v].find(r.a);
-        auto e = add_edge(g, u.second, v.second, 1, -r.p + adjust * (v.first - u.first));
-        forward[e] = adjust * (v.first - u.first);
+        long cost_route = adjust * (v.first - u.first);
+        forward[add_edge(g, u.second, v.second, 1, -r.p + cost_route)] = cost_route;
    }
     successive_shortest_path_nonnegative_weights(g, source, target);
     auto c_map = get(edge_capacity, g);
