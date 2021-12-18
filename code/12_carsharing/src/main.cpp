@@ -72,8 +72,8 @@ void testcase() {
     const long adjust = 100;
     const long MAX = 1L << 62;
     for(size_t i = 0; i < s; i++) {
+        if(indices[i].empty()) continue;
         auto indi = vector<pair<long,vertex_t>>(indices[i].begin(),indices[i].end());
-        if(indi.empty()) continue;
         sort(indi.begin(), indi.end());
         long cost_start = adjust * indi.front().first;
         forward[add_edge(g, source, indi.front().second, cars[i], cost_start)] = cost_start;
