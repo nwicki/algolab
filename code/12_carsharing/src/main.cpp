@@ -57,11 +57,11 @@ void testcase() {
         cin >> r.u >> r.v >> r.d >> r.a >> r.p; r.u--; r.v--;
         last_arrival = max(last_arrival, r.a);
         if(indices[r.u].find(r.d) == indices[r.u].end()) {
-            indices[r.u].emplace(r.d, num_vertices);
+            indices[r.u][r.d] = num_vertices;
             num_vertices++;
         }
         if(indices[r.v].find(r.a) == indices[r.v].end()) {
-            indices[r.v].emplace(r.a, num_vertices);
+            indices[r.v][r.a] = num_vertices;
             num_vertices++;
         }
     }
@@ -73,19 +73,20 @@ void testcase() {
     const long MAX = 1L << 62;
     for(size_t i = 0; i < s; i++) {
         auto indi = vector<pair<long,vertex_t>>(indices[i].begin(),indices[i].end());
+        if(indi.empty()) continue;
         sort(indi.begin(), indi.end());
         long cost_start = adjust * indi.front().first;
-        forward.emplace(add_edge(g, source, indi.front().second, cars[i], cost_start), cost_start);
+        forward[add_edge(g, source, indi.front().second, cars[i], cost_start)] = cost_start;
         for(size_t j = 0; j < indi.size()-1; j++) {
             long cost_internal = adjust * (indi[j+1].first - indi[j].first);
-            forward.emplace(add_edge(g, indi[j].second, indi[j+1].second, MAX, cost_internal), cost_internal);
+            forward[add_edge(g, indi[j].second, indi[j+1].second, MAX, cost_internal)] = cost_internal;
         }
         long cost_end = adjust * (last_arrival - indi.back().first);
-        forward.emplace(add_edge(g, indi.back().second, target, MAX, cost_end), cost_end);
+        forward[add_edge(g, indi.back().second, target, MAX, cost_end)] = cost_end;
     }
     for(const auto& r : routes) {
         long cost_route = adjust * (r.a - r.d);
-        forward.emplace(add_edge(g, indices[r.u][r.d], indices[r.v][r.a], 1, -r.p + cost_route), cost_route);
+        forward[add_edge(g, indices[r.u][r.d], indices[r.v][r.a], 1, -r.p + cost_route)] = cost_route;
    }
     successive_shortest_path_nonnegative_weights(g, source, target);
     auto c_map = get(edge_capacity, g);
