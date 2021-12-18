@@ -38,10 +38,8 @@ edge_t add_edge(graph_t& g, vertex_t u, vertex_t v, long capacity, long cost) {
 
 class route {
 public:
-    long u;
-    long v;
-    long d;
-    long a;
+    long u; long v;
+    long d; long a;
     long p;
 };
 
@@ -53,48 +51,41 @@ void testcase() {
     }
     vector<route> routes(n);
     vector<map<long,vertex_t>> indices(s);
-    map<edge_t,long> forward;
     size_t num_vertices = 0;
     long last_arrival = 0;
     for(auto& r : routes) {
-        cin >> r.u >> r.v >> r.d >> r.a >> r.p;
-        r.u--; r.v--;
+        cin >> r.u >> r.v >> r.d >> r.a >> r.p; r.u--; r.v--;
         last_arrival = max(last_arrival, r.a);
         if(indices[r.u].find(r.d) == indices[r.u].end()) {
-            indices[r.u].insert(make_pair(r.d,num_vertices));
+            indices[r.u].emplace(r.d, num_vertices);
             num_vertices++;
         }
         if(indices[r.v].find(r.a) == indices[r.v].end()) {
-            indices[r.v].insert(make_pair(r.a,num_vertices));
+            indices[r.v].emplace(r.a, num_vertices);
             num_vertices++;
         }
     }
     graph_t g(num_vertices);
-    const long adjust = 100;
-    const long MAX = 1L << 62;
     vertex_t source = add_vertex(g);
     vertex_t target = add_vertex(g);
+    map<edge_t,long> forward;
+    const long adjust = 100;
+    const long MAX = 1L << 62;
     for(size_t i = 0; i < s; i++) {
         auto indi = vector<pair<long,vertex_t>>(indices[i].begin(),indices[i].end());
         sort(indi.begin(), indi.end());
-        auto station_start = indi.front();
-        long cost_start = adjust * station_start.first;
-        forward[add_edge(g, source, station_start.second, cars[i], cost_start)] = cost_start;
+        long cost_start = adjust * indi.front().first;
+        forward.emplace(add_edge(g, source, indi.front().second, cars[i], cost_start), cost_start);
         for(size_t j = 0; j < indi.size()-1; j++) {
-            auto u = indi[j];
-            auto v = indi[j+1];
-            long cost_internal = adjust * (v.first - u.first);
-            forward[add_edge(g, u.second, v.second, MAX, cost_internal)] = cost_internal;
+            long cost_internal = adjust * (indi[j+1].first - indi[j].first);
+            forward.emplace(add_edge(g, indi[j].second, indi[j+1].second, MAX, cost_internal), cost_internal);
         }
-        auto station_end = indi.back();
-        long cost_end = adjust * (last_arrival - station_end.first);
-        forward[add_edge(g, station_end.second, target, MAX, cost_end)] = cost_end;
+        long cost_end = adjust * (last_arrival - indi.back().first);
+        forward.emplace(add_edge(g, indi.back().second, target, MAX, cost_end), cost_end);
     }
-    for(auto& r : routes) {
-        auto u = *indices[r.u].find(r.d);
-        auto v = *indices[r.v].find(r.a);
-        long cost_route = adjust * (v.first - u.first);
-        forward[add_edge(g, u.second, v.second, 1, -r.p + cost_route)] = cost_route;
+    for(const auto& r : routes) {
+        long cost_route = adjust * (r.a - r.d);
+        forward.emplace(add_edge(g, indices[r.u][r.d], indices[r.v][r.a], 1, -r.p + cost_route), cost_route);
    }
     successive_shortest_path_nonnegative_weights(g, source, target);
     auto c_map = get(edge_capacity, g);
