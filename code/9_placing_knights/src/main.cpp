@@ -32,8 +32,6 @@ class edge_adder {
   }
 };
 
-const long MAX = 1L << 62;
-
 void testcase() {
     long n; std::cin >> n;
     std::vector<std::vector<long>> index(n, std::vector<long>(n, -1));
