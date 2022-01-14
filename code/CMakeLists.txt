@@ -138,7 +138,7 @@ add_executable(10_asterix_and_the_chariot_race 10_asterix_and_the_chariot_race/s
 add_executable(10_asterix_in_switzerland 10_asterix_in_switzerland/src/main.cpp)
 add_executable(10_evolution 10_evolution/src/main.cpp)
 add_executable(10_worldcup 10_worldcup/src/main.cpp)
-target_link_libraries(10_worldcup ${Boost_LIBRARIES} CGAL::CGAL)
+target_link_libraries(10_worldcup CGAL::CGAL)
 add_executable(11_asterix_and_the_roman_legions 11_asterix_and_the_roman_legions/src/main.cpp)
 target_link_libraries(11_asterix_and_the_roman_legions CGAL::CGAL)
 add_executable(11_idefix_and_the_mansions_of_the_gods 11_idefix_and_the_mansions_of_the_gods/src/main.cpp)
