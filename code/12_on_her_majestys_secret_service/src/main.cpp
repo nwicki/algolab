@@ -25,7 +25,6 @@ void testcase() {
     for(auto& e : agents) std::cin >> e;
     for(auto& e : shelters) std::cin >> e;
     std::vector<std::vector<int>> dist_map(a, std::vector<int>(s, -1));
-    int adjust = c * d;
     int max_dist = 0;
     for(int i = 0; i < a; i++) {
         std::vector<int> temp(n);
@@ -34,14 +33,14 @@ void testcase() {
             int dist = temp[shelters[j]];
             if(dist != std::numeric_limits<int>::max()) {
                 dist_map[i][j] = dist;
-                max_dist = std::max(max_dist, dist + adjust);
+                max_dist = std::max(max_dist, dist);
             }
         }
     }
+    max_dist += c * d;
     int min_dist = 0;
-    size_t num_shelters = c * s;
     while(min_dist < max_dist) {
-        weighted_graph edmond(a + num_shelters);
+        weighted_graph edmond(a + c * s);
         int mid_dist = (min_dist + max_dist) / 2;
         for (int i = 0; i < a; i++) {
             for (int j = 0; j < s; j++) {
@@ -52,8 +51,9 @@ void testcase() {
             }
         }
         std::vector<vertex_desc> mate_map(boost::num_vertices(edmond));
-        boost::edmonds_maximum_cardinality_matching(edmond, boost::make_iterator_property_map(mate_map.begin(), boost::get(boost::vertex_index, edmond)));
-        if(boost::matching_size(edmond, boost::make_iterator_property_map(mate_map.begin(), boost::get(boost::vertex_index, edmond))) == a)
+        auto prop = boost::make_iterator_property_map(mate_map.begin(), boost::get(boost::vertex_index, edmond));
+        boost::edmonds_maximum_cardinality_matching(edmond, prop);
+        if(boost::matching_size(edmond, prop) == a)
             max_dist = mid_dist;
         else min_dist = mid_dist + 1;
     }
