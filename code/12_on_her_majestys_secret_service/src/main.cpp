@@ -24,9 +24,9 @@ void testcase() {
     std::vector<int> agents(a), shelters(s);
     for(auto& e : agents) std::cin >> e;
     for(auto& e : shelters) std::cin >> e;
-    int min_dist = d, max_dist = c * d;
     std::vector<std::vector<int>> dist_map(a, std::vector<int>(s, -1));
     int adjust = c * d;
+    int max_dist = 0;
     for(int i = 0; i < a; i++) {
         std::vector<int> temp(n);
         boost::dijkstra_shortest_paths(g, agents[i], boost::distance_map(boost::make_iterator_property_map(temp.begin(), boost::get(boost::vertex_index, g))));
@@ -38,6 +38,7 @@ void testcase() {
             }
         }
     }
+    int min_dist = 0;
     size_t num_shelters = c * s;
     while(min_dist < max_dist) {
         weighted_graph edmond(a + num_shelters);
