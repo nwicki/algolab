@@ -39,7 +39,7 @@ void testcase() {
     edge_adder adder(G);
     vertex_desc v_source = boost::add_vertex(G);
     vertex_desc v_e_matches = boost::add_vertex(G);
-    long e_matches = p - l * e;
+    long e_matches = p - l * (long) e;
     adder.add_edge(v_source, v_e_matches, e_matches, 0);
     for(vertex_desc i = 0; i < e; i++) {
         adder.add_edge(v_source, 2 * i, l, 0);
@@ -48,7 +48,7 @@ void testcase() {
     }
     vertex_desc v_target = boost::add_vertex(G);
     vertex_desc v_w_matches = boost::add_vertex(G);
-    long w_matches = p - l * w;
+    long w_matches = p - l * (long) w;
     adder.add_edge(v_w_matches, v_target, w_matches, 0);
     for(vertex_desc i = e; i < e + w; i++) {
         adder.add_edge(2 * i, v_target, l, 0);
