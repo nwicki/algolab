@@ -158,3 +158,5 @@ add_executable(12_on_her_majestys_secret_service 12_on_her_majestys_secret_servi
 target_link_libraries(12_on_her_majestys_secret_service ${Boost_LIBRARIES})
 add_executable(13_ludo_bagman 13_ludo_bagman/src/main.cpp)
 target_link_libraries(13_ludo_bagman CGAL::CGAL ${Boost_LIBRARIES})
+add_executable(13_clues 13_clues/src/main.cpp)
+target_link_libraries(13_clues CGAL::CGAL ${Boost_LIBRARIES})
