@@ -44,17 +44,19 @@ void testcase() {
     graph g(n);
     for(auto v1 = t.finite_vertices_begin(); v1 != t.finite_vertices_end(); v1++) {
         auto v2 = t.incident_vertices(v1);
+        auto v1s = v2;
         do {
             if(t.is_infinite(v2)) continue;
             if(CGAL::squared_distance(v1->point(), v2->point()) <= r) {
                 boost::add_edge(v1->info(), v2->info(), g);
                 auto v3 = t.incident_vertices(v2);
+                auto v2s = v3;
                 do {
                     if(t.is_infinite(v3) || v1->info() == v3->info()) continue;
                     if(CGAL::squared_distance(v1->point(), v3->point()) <= r) boost::add_edge(v1->info(), v3->info(), g);
-                } while(++v3 != t.incident_vertices(v2));
+                } while(++v3 != v2s);
             }
-        } while(++v2 != t.incident_vertices(v1));
+        } while(++v2 != v1s);
     }
 
     if(!boost::is_bipartite(g)) {
